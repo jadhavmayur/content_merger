@@ -1,0 +1,9 @@
+# Default output is a .docx file, which needs python-docx:
+python-docx>=1.1.0
+
+# Only needed for the live Gemini backend (LangChain + Google Generative AI):
+# langchain-google-genai>=2.0.0
+#
+# The mock backend (default) and the Ollama backend otherwise use only the
+# Python standard library. To get Markdown output instead of .docx, pass
+# `-o output/name.md` — no extra dependency required for that path.
