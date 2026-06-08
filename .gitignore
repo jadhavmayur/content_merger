@@ -1,0 +1,9 @@
+# Never ship the API key
+.env
+
+# Local virtualenv used for testing the Gemini backend
+.venv/
+
+# Python noise
+__pycache__/
+*.pyc
