@@ -1,19 +1,3 @@
-"""
-Content enrichment pipeline.
-
-Takes a draft article, asks an LLM to pick relevant media + links from a small
-simulated database, figures out where they belong, writes fresh anchor text, and
-spits out an enriched Markdown file.
-
-Three backends are supported (pick with --backend):
-  - mock    : deterministic, no network. This is the default so the script always runs.
-  - gemini  : Google Gemini via LangChain (needs GEMINI_API_KEY + langchain-google-genai).
-  - ollama  : a local open-source model via Ollama (default: qwen2.5).
-
-The pipeline runs as three separate LLM calls (selection -> placement -> anchor text)
-so each step can be logged and validated on its own.
-"""
-
 import argparse
 import json
 import logging
@@ -23,13 +7,6 @@ import sys
 import urllib.request
 
 log = logging.getLogger("enrich")
-
-
-# ---------------------------------------------------------------------------
-# Simulated databases. In a real system these would come from a CMS / asset store.
-# Topic is electric vehicles so the "right" picks are obvious enough to eyeball,
-# and there are a few distractors mixed in so selection isn't trivial.
-# ---------------------------------------------------------------------------
 
 MEDIA_DB = [
     {
@@ -105,23 +82,11 @@ LINK_DB = [
     },
 ]
 
-
-# ---------------------------------------------------------------------------
-# LLM backends. They all expose the same generate(prompt, stage) -> str method
-# and are expected to return a JSON string. The `stage` argument is only used by
-# the mock so it knows which canned answer to hand back.
-# ---------------------------------------------------------------------------
-
 class LLMError(Exception):
     pass
 
 
 class MockLLM:
-    """Deterministic stand-in so the pipeline runs with no network or API key.
-
-    Returns canned, schema-valid JSON for each stage. The picks line up with the
-    sample article (electric vehicles), which keeps the demo output coherent.
-    """
 
     name = "mock"
 
